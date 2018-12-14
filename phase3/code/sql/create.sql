@@ -5,6 +5,12 @@ DROP TABLE IF EXISTS Owns CASCADE;--OK
 DROP TABLE IF EXISTS Service_Request CASCADE;--OK
 DROP TABLE IF EXISTS Closed_Request CASCADE;--OK
 
+--CREATE SEQUENCE Mechanicseq START WITH 250;
+--CREATE SEQUENCE Customerseq START WITH 500;
+--CREATE SEQUENCE ServiceRequestseq START WITH 30001;
+
+
+
 
 -------------
 ---DOMAINS---
@@ -148,3 +154,77 @@ COPY Closed_Request (
 )
 FROM 'closed_request.csv'
 WITH DELIMITER ',';
+
+
+----------------------------
+-- CREATE TRIGGER --
+----------------------------
+
+
+DROP SEQUENCE IF EXISTS Mechanicseq;
+
+CREATE SEQUENCE Mechanicseq START WITH 250;
+
+CREATE OR REPLACE FUNCTION func_name()
+  RETURNS "trigger" AS
+  $BODY$
+  BEGIN
+   New.id := nextval('Mechanicseq');
+   
+   RETURN NEW;
+  END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE;
+  
+CREATE TRIGGER theTrigger
+BEFORE INSERT or UPDATE
+ON Mechanic
+FOR EACH ROW
+EXECUTE PROCEDURE func_name();
+
+
+DROP SEQUENCE IF EXISTS Customerseq;
+
+CREATE SEQUENCE Customerseq START WITH 500;
+
+CREATE OR REPLACE FUNCTION new_customer_id()
+  RETURNS "trigger" AS
+  $BODY$
+  BEGIN
+   New.id := nextval('Customerseq');
+   
+   RETURN NEW;
+  END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE;
+  
+CREATE TRIGGER KatherineTrigger
+BEFORE INSERT or UPDATE
+ON Customer
+FOR EACH ROW
+EXECUTE PROCEDURE new_customer_id();
+
+
+
+DROP SEQUENCE IF EXISTS Requestseq;
+
+CREATE SEQUENCE Requestseq START WITH 30001;
+
+CREATE OR REPLACE FUNCTION service_request_func()
+  RETURNS "trigger" AS
+  $BODY$
+  BEGIN
+   New.id := nextval('Requestseq');
+   
+   RETURN NEW;
+  END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE;
+  
+CREATE TRIGGER KevinTrigger
+BEFORE INSERT or UPDATE
+ON service_request
+FOR EACH ROW
+EXECUTE PROCEDURE service_request_func();
+
+
