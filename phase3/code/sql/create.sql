@@ -214,7 +214,7 @@ CREATE OR REPLACE FUNCTION open_service_request_func()
   RETURNS "trigger" AS
   $BODY$
   BEGIN
-   New.id := nextval('OpenRequestseq');
+   New.rid := nextval('OpenRequestseq');
    
    RETURN NEW;
   END
@@ -239,7 +239,7 @@ CREATE OR REPLACE FUNCTION close_service_request_func()
   RETURNS "trigger" AS
   $BODY$
   BEGIN
-   New.id := nextval('CloseRequestseq');
+   new.wid := nextval('CloseRequestseq');
    
    RETURN NEW;
   END
@@ -248,7 +248,7 @@ CREATE OR REPLACE FUNCTION close_service_request_func()
   
 CREATE TRIGGER KevinDosTrigger
 BEFORE INSERT or UPDATE
-ON service_request
+ON closed_request
 FOR EACH ROW
 EXECUTE PROCEDURE close_service_request_func();
 
