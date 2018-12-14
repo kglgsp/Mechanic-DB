@@ -305,19 +305,113 @@ public class MechanicShop{
 	}//end readChoice
 	
 	public static void AddCustomer(MechanicShop esql){//1
-		
+		try{
+			System.out.print("Enter first name: ");
+			String fname = in.readLine();
+
+			System.out.print("Enter last name: ");
+			String lname = in.readLine();
+
+			System.out.print("Enter phone number: ");
+			String phoneno = in.readLine();
+
+			System.out.print("Enter address: ");
+			String address = in.readLine();
+
+
+			String newCustomer = "INSERT INTO CUSTOMER VALUES ( " + "'" + fname + "' , '" + lname + "' , '" + phoneno + "' , " + address + ")";
+
+			esql.executeUpdate(newCustomer);
+
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void AddMechanic(MechanicShop esql){//2
-		
+		try{
+
+	        System.out.print("\tEnter first name: ");
+	        String mfname = in.readLine();
+	        
+	        System.out.print("\tEnter last name: ");
+	        String mlname = in.readLine();
+	        
+	        System.out.print("\tEnter specialty: ");
+	        String specialty = in.readLine();
+	        
+	        System.out.print("\tEnter experience: ");
+	        String experience = in.readLine();
+	        
+	      
+	        String newCar = "INSERT INTO MECHANIC VALUES ( " +"'" + mfname + "' , '" + mlname + "' , '" + specialty + "' , " + experience + ")";
+	        
+	        esql.executeUpdate(newCar);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}		
 	}
 	
 	public static void AddCar(MechanicShop esql){//3
-		
+		try{
+			System.out.print("\tEnter vin ");
+	        String vin = in.readLine();
+		        
+        
+	        System.out.print("\tEnter make: ");
+	        String make = in.readLine();
+	        
+	        System.out.print("\tEnter model: ");
+	        String model = in.readLine();
+	        System.out.print("\tEnter year: ");
+	        String year = in.readLine();
+	        
+	        String newCar = "INSERT INTO CAR VALUES ( " + "'" + vin + "' , '" + make + "' , '" + model + "' , " + year + ")";
+	        
+	        esql.executeUpdate(newCar);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}		
 	}
 	
 	public static void InsertServiceRequest(MechanicShop esql){//4
-		
+		try {
+			// System.out.print("\tEnter last name: $");
+			// String lname = in.readLine();
+
+			// String getLastNames = "SELECT * FROM Customers WHERE lname = " + lname;
+			// esql.executeQueryAndPrintResult(getLastNames);
+
+			// System.out.print("\tEnter id of customer with a service request: $");
+			// String id = in.readLine();
+
+			// //if invalid id
+			// if (!id) {
+			// 	System.out.print("\tCustomer does not exist: Add new customer(Y/N)? $");
+			// 	char ans = in.readLine();
+			// 	if (ans == 'Y' || ans == 'y') {
+			// 		AddCustomer(esql);
+			// 		break;
+			// 	}
+			// 	else {
+			// 		System.out.print("\tExiting.");
+			// 		break;
+			// 	}
+			// }
+
+			// String getID = "SELECT c.* FROM Car c, Customer p, Service_Request r WHERE " +
+			// 				"r.customer_id = %i AND c.vin = r.car_vin" + id;
+
+			// esql.executeQueryAndPrintResult(getID);
+
+		} 
+
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	public static void CloseServiceRequest(MechanicShop esql) throws Exception{//5
