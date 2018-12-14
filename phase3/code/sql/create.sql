@@ -206,25 +206,50 @@ EXECUTE PROCEDURE new_customer_id();
 
 
 
-DROP SEQUENCE IF EXISTS Requestseq;
+DROP SEQUENCE IF EXISTS openRequestseq;
 
-CREATE SEQUENCE Requestseq START WITH 30001;
+CREATE SEQUENCE openRequestseq START WITH 30001;
 
-CREATE OR REPLACE FUNCTION service_request_func()
+CREATE OR REPLACE FUNCTION open_service_request_func()
   RETURNS "trigger" AS
   $BODY$
   BEGIN
-   New.id := nextval('Requestseq');
+   New.id := nextval('OpenRequestseq');
    
    RETURN NEW;
   END
   $BODY$
   LANGUAGE plpgsql VOLATILE;
   
-CREATE TRIGGER KevinTrigger
+CREATE TRIGGER KevinUnoTrigger
 BEFORE INSERT or UPDATE
 ON service_request
 FOR EACH ROW
-EXECUTE PROCEDURE service_request_func();
+EXECUTE PROCEDURE open_service_request_func();
+
+
+
+
+
+DROP SEQUENCE IF EXISTS CloseRequestseq;
+
+CREATE SEQUENCE CloseRequestseq START WITH 30001;
+
+CREATE OR REPLACE FUNCTION close_service_request_func()
+  RETURNS "trigger" AS
+  $BODY$
+  BEGIN
+   New.id := nextval('CloseRequestseq');
+   
+   RETURN NEW;
+  END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE;
+  
+CREATE TRIGGER KevinDosTrigger
+BEFORE INSERT or UPDATE
+ON service_request
+FOR EACH ROW
+EXECUTE PROCEDURE close_service_request_func();
 
 
