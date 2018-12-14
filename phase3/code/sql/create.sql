@@ -156,9 +156,9 @@ FROM 'closed_request.csv'
 WITH DELIMITER ',';
 
 
-----------------------------
--- CREATE TRIGGER --
-----------------------------
+------------------
+--CREATE TRIGGER--
+------------------
 
 
 DROP SEQUENCE IF EXISTS Mechanicseq;
@@ -251,5 +251,65 @@ BEFORE INSERT or UPDATE
 ON closed_request
 FOR EACH ROW
 EXECUTE PROCEDURE close_service_request_func();
+
+
+
+
+
+
+DROP SEQUENCE IF EXISTS Ownseq;
+
+CREATE SEQUENCE Ownseq START WITH 5000;
+
+CREATE OR REPLACE FUNCTION owns_func()
+  RETURNS "trigger" AS
+  $BODY$
+  BEGIN
+   new.ownership_id := nextval('Ownseq');
+   
+   RETURN NEW;
+  END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE;
+  
+CREATE TRIGGER KevinTresTrigger
+BEFORE INSERT or UPDATE
+ON Owns
+FOR EACH ROW
+EXECUTE PROCEDURE owns_func();
+
+
+
+------------------
+--CREATE TRIGGER--
+------------------
+
+
+DROP INDEX if exists REQUEST_CLOSED_DATE;
+DROP INDEX if exists SERVICE_REQUEST_DATE;
+DROP INDEX if exists CUSTOMER_LNAME;
+DROP INDEX if exists MECHANIC_LNAME;
+DROP INDEX if exists ODOMETER_SERVICE_REQUEST;
+
+
+
+CREATE INDEX REQUEST_CLOSED_DATE ON Closed_Request(date);
+
+CREATE INDEX SERVICE_REQUEST_DATE ON Service_Request(date);
+
+CREATE INDEX CUSTOMER_LNAME ON Customer(lname);
+
+CREATE INDEX MECHANIC_LNAME ON Mechanic(lname);
+
+CREATE INDEX ODOMETER_SERVICE_REQUEST ON Service_Request(odometer);
+
+
+
+
+
+
+
+
+
 
 
