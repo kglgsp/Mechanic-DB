@@ -331,7 +331,6 @@ public class MechanicShop{
 	
 	public static void AddMechanic(MechanicShop esql){//2
 		try{
-
 	        System.out.print("\tEnter first name: ");
 	        String mfname = in.readLine();
 	        
@@ -419,25 +418,61 @@ public class MechanicShop{
 	}
 	
 	public static void ListCustomersWithBillLessThan100(MechanicShop esql){//6
-		
+		try{
+			String query = "SELECT date,comment,bill FROM Closed_Request WHERE bill < 100;";
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			System.out.println("total row(s): " + rowCount);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void ListCustomersWithMoreThan20Cars(MechanicShop esql){//7
-		
+		try{
+			String query = "SELECT fname, lname FROM Customer,( SELECT customer_id,COUNT(customer_id) as car_num FROM Owns GROUP BY customer_id HAVING COUNT(customer_id) > 20) AS O WHERE O.customer_id = id;";
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			System.out.println("total row(s): " + rowCount);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}	
 	}
 	
 	public static void ListCarsBefore1995With50000Milles(MechanicShop esql){//8
-		
+		try{
+			String query = "SELECT DISTINCT make,model, year FROM Car AS C, Service_Request AS S WHERE year < 1995 and S.car_vin = C.vin and S.odometer < 50000;";
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			System.out.println("total row(s): " + rowCount);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}	
 	}
 	
 	public static void ListKCarsWithTheMostServices(MechanicShop esql){//9
-		//
+		try{
+			String query = "SELECT make, model, R.creq FROM Car AS C, ( SELECT car_vin, COUNT(rid) AS creq FROM Service_Request GROUP BY car_vin ) AS R WHERE R.car_vin = C.vin ORDER BY R.creq DESC LIMIT 10;";
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			System.out.println("total row(s): " + rowCount);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 		
 	}
 	
 	public static void ListCustomersInDescendingOrderOfTheirTotalBill(MechanicShop esql){//9
-		//
+		try{
+			String query = "SELECT C.fname , C.lname, Total FROM Customer AS C, (SELECT sr.customer_id, SUM(CR.bill) AS Total FROM Closed_Request AS CR, Service_Request AS SR WHERE CR.rid = SR.rid GROUP BY SR.customer_id) AS A WHERE C.id=A.customer_id ORDER BY A.Total DESC;";
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			System.out.println("total row(s): " + rowCount);
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 		
 	}
+
 	
 }
