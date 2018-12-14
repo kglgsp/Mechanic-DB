@@ -174,6 +174,24 @@ public class MechanicShop{
 		stmt.close ();
 		return rowCount;
 	}
+
+    public String getMax(String query) throws SQLException{
+        Statement stmt = this._connection.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        
+        ResultSetMetaData rsmd = rs.getMetaData ();
+        int numCol = rsmd.getColumnCount ();
+        int rowCount = 0;
+        String A = "";
+        
+        
+        while(rs.next()){
+            for (int i=1; i<=numCol; ++i)
+                A = rs.getString (i);
+        }
+        stmt.close();
+        return A;
+    }
 	
 	/**
 	 * Method to fetch the last value from sequence. This
@@ -378,14 +396,71 @@ public class MechanicShop{
 	}
 	
 	public static void InsertServiceRequest(MechanicShop esql){//4
-		try {
 
+        try {
+        System.out.print("\tEnter last name: ");
+        String lname = in.readLine();
+        
+        String findName = "Select fname, lname, id From Customer Where lname = '" + lname + "'";
 
-		} 
+        List<List<String>> results = esql.executeQueryAndReturnResult(findName);
+        System.out.println ("Results: " + results);
+        String choice = "";
 
-		catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
+        if (esql.executeQuery(findName) == 0) {
+        	System.out.print("\tNo customer found");
+        	AddCustomer(esql); 
+        	return;        
+        }
+       
+		System.out.println ("\tEnter customer id: ");
+            String cid = in.readLine();
+          
+            
+        String findAllCars = "Select car_vin From Owns Where customer_id = " + cid;
+		List<List<String>> result = esql.executeQueryAndReturnResult(findAllCars);
+        System.out.println ("Results: " + result);
+
+          
+        choice = "";
+        while(!choice.equals("1") && !choice.equals("0"))
+        {
+            System.out.print("\tChoose 0: Choose car \n\tChoose 1: Add new car\n");
+            choice = in.readLine();
+        }
+        String vin  = "";
+            
+        if (choice.equals("1"))
+        {
+        	AddCar(esql);
+        	return;
+
+        }
+        else if(choice.equals("0"))
+        {
+
+            System.out.println ("\tPick your vin: ");
+            vin = in.readLine();
+        
+            System.out.println ("\tInput new service request: ");
+            
+            System.out.print("\tEnter date (yyyy-mm-dd): ");
+            String date = in.readLine();
+             
+            System.out.print("\tEnter odometer: ");
+            String odometer = in.readLine();
+             
+            System.out.print("\tEnter complaint: ");
+            String complaint = in.readLine();
+             
+            String insertReq = "INSERT INTO Service_Request (customer_id, car_vin, date, odometer, complain) VALUES ( " + "'" + cid + "' , '" + vin + "' , '" + date + "' , '" + odometer + "' , '" + complaint + "')";
+            esql.executeUpdate(insertReq);
+         }  
+            
+        } catch(Exception e){
+            System.err.println (e.getMessage());
+        }
+        
 	}
 	
 	public static void CloseServiceRequest(MechanicShop esql) throws Exception {//5
@@ -398,22 +473,22 @@ public class MechanicShop{
 			String mechanicExists = "Select Mechanic.id From Mechanic Where Mechanic.id = '"+empID+"';";
 			if (esql.executeQuery(mechanicExists) > 0){
 
-				System.out.print("Service request number? ");	
+				System.out.print("Service request number: ");	
 				String srn = in.readLine();
 
 				String requestExists = "Select Service_Request.rid From Service_Request Where rid = '"+srn+"';";
 				if(esql.executeQuery(requestExists) > 0){
 
-					System.out.println("closing Date? ");
+					System.out.println("Closing Date: ");
 					String closingDate = in.readLine();
 
 					String closingAfterRequestDate = "Select Service_Request.date From Service_Request,Closed_Request Where Closed_Request.rid = Service_Request.rid and Closed_Request.rid = '"+srn+"' and Closed_Request.date - Service_Request.date < 0;";
 					if(esql.executeQuery(closingAfterRequestDate) <= 0){
 
-						System.out.print("comment: ");
+						System.out.print("Comment: ");
 						String comment = in.readLine();
 
-						System.out.print("bill: ");
+						System.out.print("Bill: ");
 						String bill = in.readLine();
 
 						String newClosedRequest = "INSERT INTO Closed_Request (rid, mid, date, comment, bill) VALUES ( " + "'" + srn + "' , '" + empID + "' , '" + closingDate + "' , '" + comment +  "' ,  '"+bill+"');";
