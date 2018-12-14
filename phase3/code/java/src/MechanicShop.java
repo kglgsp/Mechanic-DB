@@ -376,7 +376,12 @@ public class MechanicShop{
 		try{
 			System.out.print("\tEnter vin ");
 	        String vin = in.readLine();
-		       
+		    
+	        String checkExists = "Select * From Car Where Car.vin = '"+ vin+ "'";
+	        if(esql.executeQuery(checkExists)> 0){
+	        	System.out.println("ERROR: vin already exists");
+	        	return;
+	        }
 	        System.out.print("\tEnter make: ");
 	        String make = in.readLine();
 	        
@@ -389,6 +394,7 @@ public class MechanicShop{
 	        String newCar = "INSERT INTO CAR VALUES ( " + "'" + vin + "' , '" + make + "' , '" + model + "' , " + year + ")";
 	        
 	        esql.executeUpdate(newCar);
+	        esql.executeQueryAndPrintResult("Select * From Car Where Car.vin = '"+ vin+ "';");
 		}
 		catch(Exception e){
 			System.out.println(e.getMessage());
