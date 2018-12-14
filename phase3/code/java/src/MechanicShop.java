@@ -388,8 +388,57 @@ public class MechanicShop{
 		}
 	}
 	
-	public static void CloseServiceRequest(MechanicShop esql) throws Exception{//5
-		
+	public static void CloseServiceRequest(MechanicShop esql) throws Exception {//5
+		try{
+			System.out.print("\tEmployee ID: ");
+			String empID = in.readLine();
+
+
+			//check if mechanic exist
+			String mechanicExists = "Select Mechanic.id From Mechanic Where Mechanic.id = '"+empID+"';";
+			if (esql.executeQuery(mechanicExists) > 0){
+
+				System.out.print("Service request number? ");	
+				String srn = in.readLine();
+
+				String requestExists = "Select Service_Request.rid From Service_Request Where rid = '"+srn+"';";
+				if(esql.executeQuery(requestExists) > 0){
+
+					System.out.println("closing Date? ");
+					String closingDate = in.readLine();
+
+					String closingAfterRequestDate = "Select Service_Request.date From Service_Request,Closed_Request Where Closed_Request.rid = Service_Request.rid and Closed_Request.rid = '"+srn+"' and Closed_Request.date - Service_Request.date < 0;";
+					if(esql.executeQuery(closingAfterRequestDate) <= 0){
+
+						System.out.print("comment: ");
+						String comment = in.readLine();
+
+						System.out.print("bill: ");
+						String bill = in.readLine();
+
+						String newClosedRequest = "INSERT INTO Closed_Request (rid, mid, date, comment, bill) VALUES ( " + "'" + srn + "' , '" + empID + "' , '" + closingDate + "' , '" + comment +  "' ,  '"+bill+"');";
+						esql.executeUpdate(newClosedRequest);
+						return;
+
+					}
+
+					System.out.println("Closing Date is before Request Date");
+					return;
+
+				}
+
+				System.out.println("Request does not exist");
+					return;
+
+
+			}
+
+			System.out.println("Mechanic does not exist");
+					return;
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}	
 	}
 	
 	public static void ListCustomersWithBillLessThan100(MechanicShop esql){//6
