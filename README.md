@@ -1,4 +1,4 @@
-# database_proj
+# mechanic-data
 
 In this project, we modeled and built a database for a mechanic shop. The system will be used to track information about customers, cars, mechanics, car ownership, service request, and billing information. The project is divided into three phases:
 
